@@ -1,7 +1,10 @@
+import io
 from tkinter.ttk import Combobox
-import minecraft_launcher_lib, os, subprocess, requests, asyncio, minepi, sys
+import minecraft_launcher_lib, os, subprocess, requests, sys
 from minecraft_launcher_lib import account, command
 from tkinter import *
+from PIL import Image, ImageTk
+from urllib.request import urlopen
 
 MINECRAFT_DIRECTORY = minecraft_launcher_lib.utils.get_minecraft_directory()
 
@@ -56,9 +59,6 @@ altBox.bind('<<ComboboxSelected>>', usealt)
 altLabel.pack()
 altBox.pack()
 
-canvas = Canvas(root, width=200, height=400)
-canvas.pack(side=RIGHT)
-
 emailLabel = Label(top, text="E-Mail / Username")
 emailLabel.pack()
 emailTxt = Entry(top, width=30)
@@ -75,37 +75,27 @@ cancelBtn = Button(top, text="Cancel", command=lambda:cancel())
 loginBtn.pack()
 cancelBtn.pack()
 
-async def get_skin():
-    email = emailTxt.get()
-    password = passwordTxt.get()
-
-    username = account.login_user(email, password)['selectedProfile']['name']
-
-    p = minepi.Player(name=username)
-    await p.initialize()
-    await p.skin.render_skin(hr=0, vr=0)
-
-    p.skin.skin.save('skin.png')
-
-    img = PhotoImage(file='skin.png')
-    canvas.create_image(0,0, anchor=NW, image=img)
+def show_skin():
+    uuid = account.login_user(globals()['email'], globals()['password'])['selectedProfile']['id']
+    raw_data = urlopen(f'https://crafatar.com/renders/body/{uuid}').read()
+    image = ImageTk.PhotoImage(data=raw_data)
+    skinLabel = Label(image=image)
+    skinLabel.image = image
+    skinLabel.pack(side=RIGHT)
 
 def login():
-    email = emailTxt.get()
-    password = passwordTxt.get()
+    globals()['email'] = emailTxt.get()
+    globals()['password'] = passwordTxt.get()
 
-    if account.validate_access_token(account.login_user(email, password)['accessToken']):
+    if account.validate_access_token(account.login_user(globals()['email'], globals()['password'])['accessToken']):
         root.deiconify()
-        asyncio.run(get_skin())
+        show_skin()
         top.destroy()
 
 def cancel():
     top.destroy()
     root.destroy()
     sys.exit()
-
-if not root.iconwindow:
-    asyncio.run(get_skin())
 
 def installMeteor():
     try:
@@ -155,22 +145,18 @@ def refreshVersions():
         versionBox.insert(count, i['id'])
 
 def start():
-    email = emailTxt.get()
-    password = passwordTxt.get()
-
-    username = account.login_user(email, password)['selectedProfile']['name']
-    uuid = account.login_user(email, password)['selectedProfile']['id']
+    username = account.login_user(globals()['email'], globals()['password'])['selectedProfile']['name']
+    uuid = account.login_user(globals()['email'], globals()['password'])['selectedProfile']['id']
 
     for i in versionBox.curselection():
         version = versionBox.get(i)
 
-
     print('[UUID] [' + uuid + "]")
-    access_token = account.login_user(email, password)['accessToken']
+    access_token = account.login_user(globals()['email'], globals()['password'])['accessToken']
 
-    print("[VALID] [" + str(account.validate_access_token(account.login_user(email, password)['accessToken'])) + "]")
+    print("[VALID] [" + str(account.validate_access_token(account.login_user(globals()['email'], globals()['password'])['accessToken'])) + "]")
 
-    if account.validate_access_token(account.login_user(email, password)['accessToken']):
+    if account.validate_access_token(account.login_user(globals()['email'], globals()['password'])['accessToken']):
         options = {
             "username": username,
             "uuid": uuid,
