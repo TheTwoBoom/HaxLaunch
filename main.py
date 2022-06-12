@@ -1,9 +1,8 @@
-import io
 from tkinter.ttk import Combobox
 import minecraft_launcher_lib, os, subprocess, requests, sys
 from minecraft_launcher_lib import account, command
 from tkinter import *
-from PIL import Image, ImageTk
+from PIL import ImageTk
 from urllib.request import urlopen
 
 MINECRAFT_DIRECTORY = minecraft_launcher_lib.utils.get_minecraft_directory()
@@ -111,11 +110,10 @@ def installMeteor():
     except:
         pass
     
-    minecraft_launcher_lib.fabric.install_fabric("1.19", MINECRAFT_DIRECTORY)
-    clientResponse = requests.get("https://workupload.com/start/peJLdkfkgNh")
-    apiResponse = requests.get("https://www.curseforge.com/minecraft/mc-mods/fabric-api/download/3823269/file")
+    if not minecraft_launcher_lib.fabric.is_version_valid("1.18.2", MINECRAFT_DIRECTORY):
+        minecraft_launcher_lib.fabric.install_fabric("1.18.2", MINECRAFT_DIRECTORY)
+    clientResponse = requests.get("https://meteorclient.com/download")
     open(MINECRAFT_DIRECTORY + "\\mods\\meteor-client-0.4.9.jar", "wb").write(clientResponse.content)
-    open(MINECRAFT_DIRECTORY + "\\mods\\fabric_api.jar", "wb").write(apiResponse.content)
 
 def installMatHax():
     try:
@@ -131,9 +129,9 @@ def installMatHax():
     except:
         pass
 
+    if not minecraft_launcher_lib.fabric.is_version_valid("1.18.2", MINECRAFT_DIRECTORY):
+        minecraft_launcher_lib.fabric.install_fabric("1.18.2", MINECRAFT_DIRECTORY)
     clientResponse = requests.get("https://github.com/MatHax/API/raw/master/Download/1-18-2/MatHax-v1.7.6-Fabric_1.18.2.jar")
-    apiResponse = requests.get("https://cdn-142.anonfiles.com/Nae2q1p2y7/83aef772-1655036736/fabric-api-0.54.0+1.18.2.jar")
-    minecraft_launcher_lib.fabric.install_fabric("1.18.2", MINECRAFT_DIRECTORY)
     open(MINECRAFT_DIRECTORY + "\\mods\\mathax.jar", "wb").write(clientResponse.content)
 
 def refreshVersions():
