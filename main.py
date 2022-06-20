@@ -7,9 +7,6 @@ from urllib.request import urlopen
 
 MINECRAFT_DIRECTORY = minecraft_launcher_lib.utils.get_minecraft_directory()
 
-os.system("title Anti-P2W Launcher")
-os.system('cls')
-
 root = Tk()
 top = Toplevel()
 
