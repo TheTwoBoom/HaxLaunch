@@ -1,5 +1,5 @@
 from tkinter.ttk import Combobox
-import minecraft_launcher_lib, os, subprocess, requests, sys
+import minecraft_launcher_lib, os, subprocess, requests
 from minecraft_launcher_lib import account, command
 from tkinter import *
 from PIL import ImageTk
@@ -12,18 +12,17 @@ top = Toplevel()
 
 top.geometry('300x200')
 top.resizable(width=False, height=False)
-top.title('Anti-P2W Launcher')
+top.title('HaxLaunch')
 
-root.title("Anti-P2W Launcher")
+root.title("HaxLaunch")
 root.geometry("500x675")
 root.resizable(width=False, height=False)
 
 versionsLabel = Label(root, text="Versions")
 versionBox = Listbox(root, width=60)
 
-count = 0
-
 versions = minecraft_launcher_lib.utils.get_installed_versions(MINECRAFT_DIRECTORY)
+count = 0
 for i in versions:
     count += 1
     versionBox.insert(count, i['id'])
@@ -161,8 +160,8 @@ def start():
 
     subprocess.call(minecraft_command)
 
-installbtn = Button(root, text="Install Meteor", command=installMeteor)
-installbtn.pack(side=TOP)
+installmetor = Button(root, text="Install Meteor", command=installMeteor)
+installmetor.pack(side=TOP)
 
 installmat = Button(root, text="Install MatHax", command=installMatHax)
 installmat.pack(side=TOP)
